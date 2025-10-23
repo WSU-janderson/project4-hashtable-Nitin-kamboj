@@ -18,7 +18,9 @@ public:
     friend ostream& operator<<(ostream& os, const HashTableBucket& bucket);
 };
 class HashTable {
-
+    public:
+    size_t capcity;
+    HashTable();
     HashTable(size_t initCapacity = 8);
     ~HashTable();
     bool insert(string key, int value);
