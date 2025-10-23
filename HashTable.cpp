@@ -4,6 +4,7 @@
 #include "HashTable.h"
 #include "HashTableBucket.h"
 # include <iostream>
+#include <bits/locale_facets_nonio.h>
 using namespace std;
     HashTable::HashTable(size_t capcity) {
         this->capcity = capcity;
@@ -20,7 +21,8 @@ bool HashTable::insert(string key, size_t val) {
         bool empty = false;
         if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS ||
         buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR) {
-            buckets.at(insertPlace).value = val;
+            buckets.at(insertPlace).load(key, val);
+            return true;
         }
         else {
                 while (i < offsets.size()) {
@@ -30,7 +32,7 @@ bool HashTable::insert(string key, size_t val) {
                         return false;
                     }
                     if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS ||
-        buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR) {
+        buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR && (empty == false)) {
                         emptySpot = insertPlace;
                         empty = true;
                     }
@@ -38,14 +40,46 @@ bool HashTable::insert(string key, size_t val) {
                 }
         }
         if (empty) {
-            buckets.at(emptySpot).value = val;
+            buckets.at(emptySpot).load(key, val);
+            return true;
         }
     return false;
     }
 bool HashTable::remove(string key) {
-
+        size_t home = hashfunction(key);
+        size_t checkingPlace = home % capcity;
+        int i = 0;
+        if (buckets.at(checkingPlace).key == key && buckets.at(checkingPlace).bucketType == HashTableBucket::BucketType::NORMAL) {
+            buckets.at(checkingPlace).key = "";
+            buckets.at(checkingPlace).bucketType = HashTableBucket::BucketType::EAR;
+            return true;
+        }
+        while (i < offsets.size()) {
+            checkingPlace = (offsets.at(i) + home) % capcity;
+            if (buckets.at(checkingPlace).key == key && buckets.at(checkingPlace).bucketType == HashTableBucket::BucketType::NORMAL) {
+                buckets.at(checkingPlace).key = "";
+                buckets.at(checkingPlace).bucketType = HashTableBucket::BucketType::EAR;
+                return true;
+            }
+            i++;
+        }
+        return false;
 }
 bool HashTable::contains(string key) {
+        size_t home = hashfunction(key);
+        size_t checkingPlace = home % capcity;
+        int i = 0;
+        if (buckets.at(checkingPlace).key == key && buckets.at(checkingPlace).bucketType == HashTableBucket::BucketType::NORMAL) {
+            return true;
+        }
+        while (i < offsets.size()) {
+            checkingPlace = (offsets.at(i) + home) % capcity;
+            if (buckets.at(checkingPlace).key == key && buckets.at(checkingPlace).bucketType == HashTableBucket::BucketType::NORMAL) {
+                return true;
+            }
+            i++;
+        }
+        return false;
 
     }
 int HashTable::get(string key) {
