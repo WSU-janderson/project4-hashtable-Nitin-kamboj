@@ -2,6 +2,7 @@
  * HashTable.cpp
  */
 #include "HashTable.h"
+#include "HashTableBucket.h"
 # include <iostream>
 using namespace std;
     HashTable::HashTable(size_t capcity) {
@@ -11,13 +12,35 @@ using namespace std;
         }
 
     }
-bool HashTable::insert(string key, size_t value) {
-      size_t s = hashfunction(key);
-        size_t insertPlace = s % capcity;
-        if (buckets[insertPlace] == -1) {
-
+bool HashTable::insert(string key, size_t val) {
+      size_t home = hashfunction(key);
+        size_t insertPlace = home % capcity;
+        int i = 0;
+        size_t emptySpot;
+        bool empty = false;
+        if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS ||
+        buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR) {
+            buckets.at(insertPlace).value = val;
         }
-
+        else {
+                while (i < offsets.size()) {
+                    insertPlace = (offsets.at(i) + home) % capcity;
+                    if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::NORMAL &&
+                buckets.at(insertPlace).key == key) {
+                        return false;
+                    }
+                    if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS ||
+        buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR) {
+                        emptySpot = insertPlace;
+                        empty = true;
+                    }
+                    i++;
+                }
+        }
+        if (empty) {
+            buckets.at(emptySpot).value = val;
+        }
+    return false;
     }
 bool HashTable::remove(string key) {
 

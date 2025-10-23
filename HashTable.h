@@ -4,20 +4,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
-struct HashTableBucket {
-enum class BucketType {NORMAL, ESS, EAR};
-public:
-
-    string key;
-    size_t value;
-    BucketType bucketType;
-    HashTableBucket();
-    HashTableBucket(string key, size_t value);
-    void load(string key, size_t value);
-    bool isEmpty() const;
-    friend ostream& operator<<(ostream& os, const HashTableBucket& bucket);
-};
+#include "HashTableBucket.h"
 class HashTable {
 public:
     size_t capcity;
