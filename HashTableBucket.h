@@ -12,11 +12,11 @@ class HashTableBucket {
 public:
     enum class BucketType {NORMAL, ESS, EAR};
     string key;
-    size_t value;
+    int value;
     BucketType bucketType;
     HashTableBucket();
-    HashTableBucket(string key, size_t value);
-    void load(string key, size_t value);
+    HashTableBucket(string key, int value);
+    void load(string key, int value);
     bool isEmpty() const;
     friend ostream& operator<<(ostream& os, const HashTableBucket& bucket);
 };

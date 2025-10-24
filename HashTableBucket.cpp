@@ -3,18 +3,16 @@
 //
 
 #include "HashTableBucket.h"
-
+using namespace std;
 HashTableBucket::HashTableBucket() {
-    this->key;
-    this->value;
+    key = "";
+    value = 0;
     bucketType = BucketType::ESS;
 }
-HashTableBucket::HashTableBucket(string key, size_t value) {
-    this->key = key;
-    this->value = value;
-    bucketType = BucketType::NORMAL;
+HashTableBucket::HashTableBucket(string key, int value) {
+    load(key, value);
 }
-void HashTableBucket::load(string key, size_t value) {
+void HashTableBucket::load(string key, int value) {
     this->key = key;
     this->value = value;
     bucketType = BucketType::NORMAL;
@@ -24,6 +22,12 @@ bool HashTableBucket::isEmpty() const {
         return false;
     }
     return true;
+}
+std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
+    if (bucket.bucketType == HashTableBucket::BucketType::NORMAL) {
+        os << "<" << bucket.key << ", " << bucket.value << ">";
+    }
+    return os;
 }
 
 
