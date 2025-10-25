@@ -28,4 +28,5 @@ public:
     size_t capacity() const;
     size_t size() const;
     friend ostream& operator<<(ostream& os, const HashTable& HashTable);
+    void resize();
 };

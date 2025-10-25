@@ -11,7 +11,9 @@ using namespace std;
         for (int i = 0; i < capcity; i++) {
             buckets.push_back(HashTableBucket());
         }
-
+        for (size_t i = 1; i < capcity; ++i) {
+            offsets.push_back((i * 7) % capcity);
+        }
     }
     HashTable::~HashTable() {
 
@@ -27,6 +29,7 @@ bool HashTable::insert(string key, int val) {
         buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR) {
             buckets.at(insertPlace).load(key, val);
             Size++;
+            resize();
             return true;
         }
         else {
@@ -47,6 +50,7 @@ bool HashTable::insert(string key, int val) {
         if (empty) {
             buckets.at(emptySpot).load(key, val);
             Size++;
+            resize();
             return true;
         }
     return false;
@@ -163,4 +167,13 @@ ostream& operator<<(ostream& os, const HashTable& hashTable) {
         return os;
     }
 
+void HashTable::resize() {
+        double alpha = static_cast<double> (Size)/static_cast<double>(capcity);
+        if (alpha >= 0.5) {
+            this->capcity = capcity * 2;
+        }
+        vector<HashTableBucket> oldbucket = buckets;
+        buckets.clear();
+
+    }
 
