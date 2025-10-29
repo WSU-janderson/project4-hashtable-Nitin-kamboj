@@ -11,8 +11,23 @@ using namespace std;
         for (int i = 0; i < capcity; i++) {
             buckets.push_back(HashTableBucket());
         }
-        for (size_t i = 1; i < capcity; ++i) {
-            offsets.push_back((i * 7) % capcity);
+        // for (size_t i = 1; i < capcity; ++i) {
+        //     offsets.push_back((i * 7) % capcity);
+        // }
+        while (offsets.size() < capcity - 1 ) {
+            bool duplicate = false;
+            int random = rand() % capcity;
+            if (random > 0) {
+                for (int i = 0; i < offsets.size(); i++) {
+                    if (random == offsets.at(i)) {
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (!duplicate) {
+                    offsets.push_back(random);
+                }
+            }
         }
     }
     HashTable::~HashTable() {
@@ -20,6 +35,9 @@ using namespace std;
     }
 
 bool HashTable::insert(string key, int val) {
+        if (contains(key)) {
+            return false;
+        }
       size_t home = hashfunction(key);
         size_t insertPlace = home % capcity;
         int i = 0;
@@ -169,11 +187,57 @@ ostream& operator<<(ostream& os, const HashTable& hashTable) {
 
 void HashTable::resize() {
         double alpha = static_cast<double> (Size)/static_cast<double>(capcity);
-        if (alpha >= 0.5) {
+        // cout<< alpha << endl;
+
+        if (alpha > 0.5) {
+            offsets.clear();
             this->capcity = capcity * 2;
+            Size = 0;
+            // for (size_t i = 1; i < capcity; ++i) {
+            //     offsets.push_back((i * 7) % capcity);
+            // }
+            while (offsets.size() < capcity - 1 ) {
+                bool duplicate = false;
+                int random = rand() % capcity;
+                if (random > 0) {
+                    for (int i = 0; i < offsets.size(); i++) {
+                        if (random == offsets.at(i)) {
+                            duplicate = true;
+                            break;
+                        }
+                    }
+                    if (!duplicate) {
+                        offsets.push_back(random);
+                    }
+                }
+            }
+            vector<HashTableBucket> oldbucket = buckets;
+            buckets.clear();
+            buckets.resize(capcity);
+            for (int i = 0; i < oldbucket.size(); i++) {
+                int j =0;
+                size_t home;
+                size_t insertPlace;
+                if (oldbucket.at(i).key != "") {
+                    home = hashfunction(oldbucket.at(i).key);
+                    insertPlace = home % capcity;
+                    if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS) {
+                        buckets.at(insertPlace).load(oldbucket.at(i).key, oldbucket.at(i).value);
+                        Size++;
+                    }
+                    else {
+                        while (j < offsets.size()) {
+                            insertPlace = (offsets.at(j) + home) % capcity;
+                            if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS) {
+                                buckets.at(insertPlace).load(oldbucket.at(i).key, oldbucket.at(i).value);
+                                 Size++;
+                                 break;
+                }
+                            j++;
+                        }
+                    }
+                }
+            }
         }
-        vector<HashTableBucket> oldbucket = buckets;
-        buckets.clear();
 
     }
-
