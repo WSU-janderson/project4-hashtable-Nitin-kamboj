@@ -43,8 +43,7 @@ bool HashTable::insert(string key, int val) {
         int i = 0;
         size_t emptySpot;
         bool empty = false;
-        if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS ||
-        buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::EAR) {
+        if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS) {
             buckets.at(insertPlace).load(key, val);
             Size++;
             resize();
