@@ -43,6 +43,7 @@ bool HashTable::insert(string key, int val) {
         int i = 0;
         size_t emptySpot;
         bool empty = false;
+        // check if the first place is ESS
         if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::ESS) {
             buckets.at(insertPlace).load(key, val);
             Size++;
@@ -50,6 +51,7 @@ bool HashTable::insert(string key, int val) {
             return true;
         }
         else {
+            // Do probing and check ESS place and if the place is EAR then set to true but check further till we gwt ESS to check duplication of key
                 while (i < offsets.size()) {
                     insertPlace = (offsets.at(i) + home) % capcity;
                     if (buckets.at(insertPlace).bucketType == HashTableBucket::BucketType::NORMAL &&
@@ -64,6 +66,7 @@ bool HashTable::insert(string key, int val) {
                     i++;
                 }
         }
+        // if empty is true then there must be EAR so place that ket to that bucket
         if (empty) {
             buckets.at(emptySpot).load(key, val);
             Size++;
@@ -76,12 +79,14 @@ bool HashTable::remove(string key) {
         size_t home = hashfunction(key);
         size_t checkingPlace = home % capcity;
         int i = 0;
+        // if key found at the first place
         if (buckets.at(checkingPlace).key == key && buckets.at(checkingPlace).bucketType == HashTableBucket::BucketType::NORMAL) {
             buckets.at(checkingPlace).key = "";
             buckets.at(checkingPlace).bucketType = HashTableBucket::BucketType::EAR;
             Size--;
             return true;
         }
+        // probing to checking if there is key somewhere else in the hashtable
         while (i < offsets.size()) {
             checkingPlace = (offsets.at(i) + home) % capcity;
             if (buckets.at(checkingPlace).key == key && buckets.at(checkingPlace).bucketType == HashTableBucket::BucketType::NORMAL) {
@@ -126,7 +131,6 @@ optional<int> HashTable::get( const string& key) const {
             i++;
         }
         return nullopt;
-
     }
 int& HashTable::operator[](const string& key) {
     size_t home = hashfunction(key);

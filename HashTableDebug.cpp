@@ -15,5 +15,7 @@ int main() {
     cout<<hashTable.contains("n") << endl;
     cout<<hashTable.size() << endl;
     cout<<hashTable.buckets.size() << endl;
+    cout  << hashTable;
+    cout << hashTable.buckets.at(2) << endl;
     return 0;
 }
