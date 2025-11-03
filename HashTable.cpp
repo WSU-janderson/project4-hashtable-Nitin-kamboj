@@ -1,6 +1,14 @@
 /**
  * HashTable.cpp
  */
+// File: HashTable.cpp
+// Author: Nitin Kamboj
+// Project: Hash Table Implementation (CS 3100 – Data Structures)
+// Description:
+//    This file implements the HashTable class, which provides a hash
+//    table data structure using open addressing and custom probing.
+//    Functions include insertion, removal, key lookup, resizing, and
+//    operator overloading for easy access and printing.
 #include "HashTable.h"
 #include "HashTableBucket.h"
 # include <iostream>
